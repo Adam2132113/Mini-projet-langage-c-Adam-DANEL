@@ -6,7 +6,7 @@
 #define MAX_PARKINGS 100
 #define MAX_STRING 100
 
-// =================== Structures ===================
+// Structures
 typedef struct {
     int id;
     char nom[MAX_STRING];
@@ -22,13 +22,13 @@ typedef struct {
     time_t heureEntree;
 } Vehicule;
 
-// =================== Variables globales ===================
+// Variables globales
 Parking parkings[MAX_PARKINGS];
 Vehicule vehicules[MAX_PARKINGS];
 int nbParkings = 0;
 int nbVehicules = 0;
 
-// =================== Fonctions ===================
+// Fonctions
 
 // Lecture du fichier CSV des parkings
 void lesparkings(const char* nomFichier) {
@@ -297,7 +297,7 @@ void test_sauvegarde() {
 
 // Fonction de lancement de tous les tests
 void lancerTests() {
-    printf("==== LANCEMENT DES TESTS ====\n");
+    printf("LANCEMENT DES TESTS\n");
     creerFichierTest();
     test_lectureParkings();
     test_verifierPlaces();
@@ -305,7 +305,7 @@ void lancerTests() {
     test_suiviClient();
     test_modeAdmin();
     test_sauvegarde();
-    printf("==== FIN DES TESTS ====\n");
+    printf("FIN DES TESTS\n");
 }
 
 
