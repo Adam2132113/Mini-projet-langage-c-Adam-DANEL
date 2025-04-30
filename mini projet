@@ -226,15 +226,6 @@ void menu() {
     } while (choix != 0);
 }
 
-// Creation d'un fichier
-void creerFichierTest() {
-    FILE* f = fopen("parking-metropole.csv", "w");
-    assert(f != NULL);
-    fprintf(f, "1,Parking République,Lille Centre,100,20,Ouvert\n");
-    fprintf(f, "2,Parking Gambetta,Lille Sud,50,10,Ouvert\n");
-    fclose(f);
-}
-
 // Test de lecture des parkings
 void test_lectureParkings() {
     lesparkings("parking-metropole.csv");
