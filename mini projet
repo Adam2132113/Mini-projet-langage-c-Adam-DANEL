@@ -6,9 +6,9 @@
 #define MAX_PARKINGS 100
 #define MAX_STRING 100
 
-//Structures
+// Structures
 typedef struct {
-    int id;
+    char id[MAX_STRING];
     char nom[MAX_STRING];
     char adresse[MAX_STRING];
     int occupation;
@@ -18,51 +18,54 @@ typedef struct {
 
 typedef struct {
     char plaque[MAX_STRING];
-    int idParking;
+    char idParking[MAX_STRING];
     time_t heureEntree;
 } Vehicule;
 
-//Variables globales
+// Variables globales
 Parking parkings[MAX_PARKINGS];
 int nbParkings = 0;
 
 Vehicule vehicules[MAX_PARKINGS];
 int nbVehicules = 0;
 
-//Fonctions
+// Initialisation manuelle
+void initialiserParkings() {
+    nbParkings = 3;
 
-void lesparkings(const char* nomFichier) {
-    FILE* fichier = fopen(nomFichier, "r");
-    if (!fichier) {
-        perror("Erreur ouverture fichier");
-        exit(1);
-    }
+    strcpy(parkings[0].id, "P001");
+    strcpy(parkings[0].nom, "Parking Lille Centre");
+    strcpy(parkings[0].adresse, "12 rue de Paris, Lille");
+    parkings[0].occupation = 50;
+    parkings[0].capacite = 100;
+    strcpy(parkings[0].etat, "Ouvert");
 
-    char ligne[256];
-    while (fgets(ligne, sizeof(ligne), fichier)) {
-        sscanf(ligne, "%d,%99[^,],%99[^,],%d,%d,%99[^\n]",
-            &parkings[nbParkings].id,
-            parkings[nbParkings].nom,
-            parkings[nbParkings].adresse,
-            &parkings[nbParkings].occupation,
-            &parkings[nbParkings].capacite,
-            parkings[nbParkings].etat);
-        nbParkings++;
-    }
+    strcpy(parkings[1].id, "LIL01");
+    strcpy(parkings[1].nom, "Parking Gare Lille Flandres");
+    strcpy(parkings[1].adresse, "Place des Buisses, Lille");
+    parkings[1].occupation = 75;
+    parkings[1].capacite = 120;
+    strcpy(parkings[1].etat, "Ouvert");
 
-    fclose(fichier);
+    strcpy(parkings[2].id, "EUR8");
+    strcpy(parkings[2].nom, "Parking EuraLille");
+    strcpy(parkings[2].adresse, "Boulevard Hoover, Lille");
+    parkings[2].occupation = 30;
+    parkings[2].capacite = 80;
+    strcpy(parkings[2].etat, "Fermé");
 }
 
-void afficheparking(int id) {
+// Fonctions
+void afficheparking(char* id) {
     for (int i = 0; i < nbParkings; i++) {
-        if (parkings[i].id == id) {
-            printf("=== Parking ID %d ===\n", id);
+        if (strcmp(parkings[i].id, id) == 0) {
+            printf("=== Parking ID %s ===\n", id);
             printf("Nom : %s\nAdresse : %s\nCapacité : %d\nOccupées : %d\nÉtat : %s\n",
-                parkings[i].nom,
-                parkings[i].adresse,
-                parkings[i].occupation,
-                parkings[i].capacite,
-                parkings[i].etat);
+                   parkings[i].nom,
+                   parkings[i].adresse,
+                   parkings[i].capacite,
+                   parkings[i].occupation,
+                   parkings[i].etat);
             return;
         }
     }
@@ -76,18 +79,18 @@ void afficheparkings() {
     }
 }
 
-int verifierPlacesDisponibles(int idParking) {
+int verifierPlacesDisponibles(char* idParking) {
     for (int i = 0; i < nbParkings; i++) {
-        if (parkings[i].id == idParking) {
+        if (strcmp(parkings[i].id, idParking) == 0) {
             return parkings[i].occupation < parkings[i].capacite;
         }
     }
     return 0;
 }
 
-void mettreAJourOccupation(int idParking, int entree) {
+void mettreAJourOccupation(char* idParking, int entree) {
     for (int i = 0; i < nbParkings; i++) {
-        if (parkings[i].id == idParking) {
+        if (strcmp(parkings[i].id, idParking) == 0) {
             if (entree)
                 parkings[i].occupation++;
             else
@@ -96,19 +99,19 @@ void mettreAJourOccupation(int idParking, int entree) {
     }
 }
 
-void entreeParking(char* plaque, int idParking) {
+void entreeParking(char* plaque, char* idParking) {
     if (!verifierPlacesDisponibles(idParking)) {
         printf("Parking plein.\n");
         return;
     }
 
     strcpy(vehicules[nbVehicules].plaque, plaque);
-    vehicules[nbVehicules].idParking = idParking;
+    strcpy(vehicules[nbVehicules].idParking, idParking);
     vehicules[nbVehicules].heureEntree = time(NULL);
     nbVehicules++;
 
     mettreAJourOccupation(idParking, 1);
-    printf("Véhicule %s entré dans le parking %d.\n", plaque, idParking);
+    printf("Véhicule %s entré dans le parking %s.\n", plaque, idParking);
 }
 
 double calculerMontant(time_t entree, time_t sortie) {
@@ -138,22 +141,23 @@ void sauvegarderEtatParking(const char* fichier) {
     if (!f) return;
 
     for (int i = 0; i < nbParkings; i++) {
-        fprintf(f, "%d,%s,%s,%d,%d,%s\n",
-            parkings[i].id,
-            parkings[i].nom,
-            parkings[i].adresse,
-            parkings[i].occupation,
-            parkings[i].capacite,
-            parkings[i].etat);
+        fprintf(f, "%s,%s,%s,%d,%d,%s\n",
+                parkings[i].id,
+                parkings[i].nom,
+                parkings[i].adresse,
+                parkings[i].occupation,
+                parkings[i].capacite,
+                parkings[i].etat);
     }
 
     fclose(f);
 }
 
-//Menu
+// Menu
 void menu() {
-    int choix, id;
+    int choix;
     char plaque[MAX_STRING];
+    char id[MAX_STRING];
 
     do {
         printf("\n MENU\n");
@@ -171,14 +175,14 @@ void menu() {
                 break;
             case 2:
                 printf("ID du parking : ");
-                scanf("%d", &id);
+                scanf("%s", id);
                 afficheparking(id);
                 break;
             case 3:
                 printf("Plaque : ");
                 scanf("%s", plaque);
                 printf("ID du parking : ");
-                scanf("%d", &id);
+                scanf("%s", id);
                 entreeParking(plaque, id);
                 break;
             case 4:
@@ -197,7 +201,7 @@ void menu() {
 }
 
 int main() {
-    lesparkings("parking-metropole.csv");
+    initialiserParkings();
     menu();
     return 0;
 }
