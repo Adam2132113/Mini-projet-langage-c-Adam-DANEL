@@ -196,7 +196,6 @@ void menu() {
     } while (choix != 0);
 }
 
-//Main
 int main() {
     lesparkings("parking-metropole.csv");
     menu();
