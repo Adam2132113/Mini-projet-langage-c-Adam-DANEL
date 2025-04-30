@@ -11,7 +11,7 @@ typedef struct {
     char id[MAX_STRING];
     char nom[MAX_STRING];
     char adresse[MAX_STRING];
-    int occupation;
+    int placesdispo;
     int capacite;
     char etat[MAX_STRING];
 } Parking;
@@ -30,29 +30,36 @@ Vehicule vehicules[MAX_PARKINGS];
 int nbVehicules = 0;
 
 // Initialisation manuelle
-void initialiserParkings() {
+void lesparkings() {
     nbParkings = 3;
 
-    strcpy(parkings[0].id, "P001");
-    strcpy(parkings[0].nom, "Parking Lille Centre");
-    strcpy(parkings[0].adresse, "12 rue de Paris, Lille");
-    parkings[0].occupation = 50;
-    parkings[0].capacite = 100;
+    strcpy(parkings[0].id, "TCG0001");
+    strcpy(parkings[0].nom, "Parking Hotel de Ville");
+    strcpy(parkings[0].adresse, "Rue de la Bienfaisance, Tourcoing");
+    parkings[0].placesdispo = 185;
+    parkings[0].capacite = 434;
     strcpy(parkings[0].etat, "Ouvert");
 
-    strcpy(parkings[1].id, "LIL01");
-    strcpy(parkings[1].nom, "Parking Gare Lille Flandres");
-    strcpy(parkings[1].adresse, "Place des Buisses, Lille");
-    parkings[1].occupation = 75;
-    parkings[1].capacite = 120;
-    strcpy(parkings[1].etat, "Ouvert");
+    strcpy(parkings[1].id, "TCG0002");
+    strcpy(parkings[1].nom, "Parking Miss Cavell");
+    strcpy(parkings[1].adresse, "Avenue Allende, Tourcoing");
+    parkings[1].placesdispo = 150;
+    parkings[1].capacite = 273;
+    strcpy(parkings[1].etat, "Abonnés");
 
-    strcpy(parkings[2].id, "EUR8");
-    strcpy(parkings[2].nom, "Parking EuraLille");
-    strcpy(parkings[2].adresse, "Boulevard Hoover, Lille");
-    parkings[2].occupation = 30;
-    parkings[2].capacite = 80;
-    strcpy(parkings[2].etat, "Fermé");
+    strcpy(parkings[2].id, "LIL0002");
+    strcpy(parkings[2].nom, "Parking Plaza");
+    strcpy(parkings[2].adresse, "Rue Nationale, Lille");
+    parkings[2].placesdispo = 140;
+    parkings[2].capacite = 300;
+    strcpy(parkings[2].etat, "OUVERT");
+    
+    strcpy(parkings[3].id, "TCG0003");
+    strcpy(parkings[3].nom, "Parking St Christophe");
+    strcpy(parkings[3].adresse, "Rue des Anges, Tourcoing");
+    parkings[3].placesdispo = 604;
+    parkings[3].capacite = 757;
+    strcpy(parkings[3].etat, "OUVERT");
 }
 
 // Fonctions
@@ -63,8 +70,8 @@ void afficheparking(char* id) {
             printf("Nom : %s\nAdresse : %s\nCapacité : %d\nOccupées : %d\nÉtat : %s\n",
                    parkings[i].nom,
                    parkings[i].adresse,
+                   parkings[i].placesdispo,
                    parkings[i].capacite,
-                   parkings[i].occupation,
                    parkings[i].etat);
             return;
         }
@@ -82,7 +89,7 @@ void afficheparkings() {
 int verifierPlacesDisponibles(char* idParking) {
     for (int i = 0; i < nbParkings; i++) {
         if (strcmp(parkings[i].id, idParking) == 0) {
-            return parkings[i].occupation < parkings[i].capacite;
+            return parkings[i].placesdispo < parkings[i].capacite;
         }
     }
     return 0;
@@ -92,9 +99,9 @@ void mettreAJourOccupation(char* idParking, int entree) {
     for (int i = 0; i < nbParkings; i++) {
         if (strcmp(parkings[i].id, idParking) == 0) {
             if (entree)
-                parkings[i].occupation++;
+                parkings[i].placesdispo++;
             else
-                parkings[i].occupation--;
+                parkings[i].placesdispo--;
         }
     }
 }
@@ -145,7 +152,7 @@ void sauvegarderEtatParking(const char* fichier) {
                 parkings[i].id,
                 parkings[i].nom,
                 parkings[i].adresse,
-                parkings[i].occupation,
+                parkings[i].placesdispo,
                 parkings[i].capacite,
                 parkings[i].etat);
     }
@@ -201,7 +208,7 @@ void menu() {
 }
 
 int main() {
-    initialiserParkings();
+    lesparkings();
     menu();
     return 0;
 }
